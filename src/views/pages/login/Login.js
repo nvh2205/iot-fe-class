@@ -12,11 +12,23 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
 const Login = () => {
+  const [isLoading, setIsLoading] = React.useState(false)
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setIsLoading(true)
+    localStorage.setItem('user', JSON.stringify({ userName: e.target.username.value, isLogin: true }))
+    // redirect to home page
+    window.location.href = '/'
+    setIsLoading(false)
+  }
+
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -25,14 +37,14 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm onSubmit={handleLogin}>
                     <h1>Login</h1>
                     <p className="text-body-secondary">Sign In to your account</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput placeholder="Username" autoComplete="username" name="username" required />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -42,13 +54,17 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                        name="password"
+                        required
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
-                          Login
-                        </CButton>
+                        {isLoading ? <CSpinner color="primary" /> :
+                          <CButton type='submit' color="primary" className="px-4">
+                            Login
+                          </CButton>}
+
                       </CCol>
                       <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
