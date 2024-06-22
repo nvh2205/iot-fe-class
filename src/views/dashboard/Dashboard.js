@@ -18,6 +18,7 @@ import {
   CForm,
   CFormInput,
   CFormSelect,
+  CFormSwitch,
 } from "@coreui/react";
 import { getStyle } from "@coreui/utils";
 import { CChartBar, CChartLine } from "@coreui/react-chartjs";
@@ -85,9 +86,30 @@ const Dashboard = (props) => {
     const getDevices = async () => {
       try {
         // const userId = localStorage.getItem("userId");
-        const userId = "1086ae96-6dfc-4f9a-9b02-2abd46bbe767";
-        const res = await axios.get(`${process.env.API}/device/user/${userId}`);
-        setDevices(res.data);
+
+        setDevices([
+          {
+            "id": "7f683321-cc0f-4c5f-920b-369dae5eed20",
+            "name": "Device 2",
+            "info": "",
+            "metadata": {
+              "humidity": "84%",
+              "temperature": "29°C"
+            },
+            "user_id": "1086ae96-6dfc-4f9a-9b02-2abd46bbe767",
+            "garden_id": "b2e8d7b2-cfc4-4ced-9824-cf0ad1ab41c7"
+          },
+          {
+            "id": "6b9ba63b-f3da-4ddd-8edb-7b7ddb1c64e1",
+            "name": "test",
+            "info": "example",
+            "metadata": {
+              "temperature": "12°C"
+            },
+            "user_id": "1086ae96-6dfc-4f9a-9b02-2abd46bbe767",
+            "garden_id": null
+          }
+        ]);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -98,39 +120,25 @@ const Dashboard = (props) => {
   }, []);
 
   const postDevice = async (data) => {
-    try {
-      const res = await axios.post(`${process.env.API}/device`, data);
-      return res.data;
-    } catch (error) {}
+
   };
 
   const putDevice = async (id, data) => {
-    try {
-      const res = await axios.put(`${process.env.API}/device/${id}`, data);
-      return res.data;
-    } catch (error) {}
+
   };
 
   const deleteDevice = async (id) => {
-    try {
-      const res = await axios.delete(`${process.env.API}/device/${id}`);
-    } catch (error) {}
+
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setVisible(false);
-    // const data = new FormData(e.target);
-    // postDevice(data);
-    // get value from form
+
     const data = {
-      name: e.target.name.value,
-      metadata: JSON.parse(e.target.metadata.value),
-      info: "example",
-      userId: "1086ae96-6dfc-4f9a-9b02-2abd46bbe767",
+
     };
-    // console.log(e.target.metadata);
+
     const res = await postDevice(data);
     if (res) {
       setDevices([...devices, res]);
@@ -146,9 +154,7 @@ const Dashboard = (props) => {
     // postDevice(data);
     // get value from form
     const data = {
-      ...device,
-      name: e.target.name.value,
-      userId: "1086ae96-6dfc-4f9a-9b02-2abd46bbe767",
+
     };
     // console.log(e.target.metadata);
     const res = await putDevice(device.id, data);
@@ -174,7 +180,7 @@ const Dashboard = (props) => {
     setLoading(true);
     await deleteDevice(device.id);
     const newDevices = devices.filter((item) => item.id !== device.id);
-    console.log(newDevices, "newDevices");
+
     setDevices(newDevices);
     setLoading(false);
   };
@@ -182,7 +188,7 @@ const Dashboard = (props) => {
   return (
     <CRow className="mb-4" xs={{ gutter: 4 }}>
       <LoadingOverlay active={loading} spinner text=""></LoadingOverlay>
-      {/* Modal */}
+      {/* Modal update */}
       <CModal
         alignment="center"
         visible={visibleA}
@@ -198,14 +204,29 @@ const Dashboard = (props) => {
           <CModalBody>
             <CFormInput
               type="text"
-              id="exampleFormControlInput1"
+              id="name"
               label="Tên Thiết Bị"
               placeholder="Example....."
               aria-describedby="exampleFormControlInputHelpInline"
               defaultValue={device?.name || ""}
               name="name"
               required
+              className="mb-3"
             />
+            <CFormInput
+              type="text"
+              id="code"
+              label="Mã code thiết bị"
+              placeholder="Example....."
+              aria-describedby="exampleFormControlInputHelpInline"
+              defaultValue={device?.name || ""}
+              name="name"
+              required
+              className="mb-3"
+            />
+
+            <CFormSwitch size="xl" label="Chế độ tự động" id="auto-button" />
+
           </CModalBody>
           <CModalFooter>
             <CButton color="danger" onClick={() => handleDelete()}>
@@ -266,7 +287,13 @@ const Dashboard = (props) => {
                 className="d-flex justify-content-between
        align-items-center fs-5 "
               >
-                {device.name}
+                <div className="d-flex align-items-center gap-3">
+                  <p className="mb-0">{device.name}</p>
+                  <label className="switch">
+                    <input type="checkbox" />
+                    <span className="slider round"></span>
+                  </label>
+                </div>
                 <CButton
                   color=""
                   onClick={() => {
@@ -294,9 +321,7 @@ const Dashboard = (props) => {
                           {key}
                         </div>
                       </div>
-                      {index !== Object.keys(device.metadata).length - 1 && (
-                        <div className="vr"></div>
-                      )}
+                      {index !== Object.keys(device.metadata).length - 1 && <div className="vr"></div>}
                     </>
                   ))}
                 </div>

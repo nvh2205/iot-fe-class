@@ -16,6 +16,7 @@ import {
   CModalBody,
   CFormInput,
   CModalFooter,
+  CFormSwitch,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { cilXCircle, cilPlaylistAdd } from "@coreui/icons";
@@ -132,10 +133,15 @@ const Garden = () => {
                         </div>
                       </div>
 
-                      <div className="d-flex align-items-center">
+                      <div className="d-flex align-items-center gap-4">
+
+                      <CFormSwitch size="xl" label="" id="on_off" />
+
                         <CButton color="danger" variant="outline" size="smaill">
                           <CIcon icon={cilXCircle} />
                         </CButton>
+
+
                       </div>
                     </div>
                   ))}
